@@ -26,8 +26,6 @@ def upgrade():
                     sa.Column('current_amount', sa.Integer(), nullable=True),
                     sa.Column('membership_status', sa.String(length=16), nullable=True),
                     sa.Column('status', sa.Boolean(), nullable=True),
-                    sa.ForeignKeyConstraint(['amount_per_week'], ['group_configuration.amount_per_week'],
-                                            ondelete='CASCADE'),
                     sa.ForeignKeyConstraint(['group_id'], ['group_configuration.id'], ondelete='CASCADE'),
                     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
                     sa.PrimaryKeyConstraint('id')

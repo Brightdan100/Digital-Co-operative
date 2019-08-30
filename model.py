@@ -65,7 +65,7 @@ class GroupConfigurationSchema(ma.Schema):
     description = fields.String()
     status = fields.Boolean(default=False)
     searchable_status = fields.Boolean(default=True)
-    max_member = fields.Integer(default=50)
+    max_member = fields.Integer(required=True)
     amount_per_week = fields.Integer(required=True)
     created_date = fields.DateTime()
 
@@ -74,20 +74,22 @@ class CooperativeTransaction(db.Model):
     __tablename__ = 'cooperative_transactions'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey('group_configuration.id', ondelete='CASCADE'))
-    amount_per_week = db.Column(db.Integer, db.ForeignKey('group_configuration.amount_per_week', ondelete='CASCADE'))
+    group_id = db.Column(db.Integer, db.ForeignKey('group_configuration.id', ondelete='CASCADE'), nullable=False)
+    amount_per_week = db.Column(db.Integer, nullable=False)
     current_amount = db.Column(db.Integer)
     membership_status = db.Column(db.String(16), default='MEMBER')
+    status = db.Column(db.Boolean, default=False)
 
     user = db.relationship('User', backref=db.backref('cooperative_transactions', lazy='dynamic'))
     group = db.relationship('GroupConfiguration', backref=db.backref('cooperative_transactions', lazy='dynamic'))
 
-    def __init__(self, user_id, group_id, amount_per_week, current_amount, membership_status):
+    def __init__(self, user_id, group_id, amount_per_week, current_amount, membership_status, status):
         self.user_id = user_id
         self.group_id = group_id
         self.amount_per_week = amount_per_week
         self.current_amount = current_amount
         self.membership_status = membership_status
+        self.status = status
 
 
 class CooperativeTransactionsSchema(ma.Schema):
@@ -97,3 +99,4 @@ class CooperativeTransactionsSchema(ma.Schema):
     amount_per_week = fields.Integer(required=True)
     current_amount = fields.Integer(required=True)
     membership_status = fields.Integer(required=True)
+    status = fields.Boolean(required=True)
